@@ -41,7 +41,7 @@ export default function LessonsPage({
     return activeModule?.lessons.find(
       (lesson) => lessonSlug === slugify(lesson.lessons_title)
     );
-  }, [module, lessonSlug]);
+  }, [activeModule, lessonSlug]);
 
   const [activeTopicIndex, setActiveTopicIndex] = useState<number>(0);
   const [activeTopicBookIndex, setActiveTopicBookIndex] = useState<number>(0);

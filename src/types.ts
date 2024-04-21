@@ -19,23 +19,20 @@ export type ModuleResponse = Array<{
     protected: boolean;
   };
   template: string;
-  aioseo_notices: Array<any>;
   lessons: Array<{
     _type: string;
-    lessons_title: string;
-    lessons_description: string;
-    lesson_topics: Array<{
+    title: string;
+    description: string;
+    topics: Array<{
       _type: string;
-      lesson_lessons_title: string;
-      lesson_lessons_description: string;
-      lesson_lessons_questions: string;
-      lesson_topic_books: Array<{
+      title: string;
+      resources: Array<{
         _type: string;
-        lesson_lessons_topic_books_title: string;
-        lesson_lessons_topic_books_description: string;
-        lesson_lessons_topic_books_start: number;
-        lesson_lessons_topic_books_end: number;
-        lesson_lessons_topic_books_book: number;
+        title: string;
+        document_page_start: number;
+        document_page_end: number;
+        document: number;
+        text: string;
       }>;
     }>;
   }>;
@@ -59,3 +56,66 @@ export type ModuleResponse = Array<{
     }>;
   };
 }>;
+
+export type AttachmentResponse = {
+  id: number;
+  date: string;
+  date_gmt: string;
+  guid: {
+    rendered: string;
+  };
+  modified: string;
+  modified_gmt: string;
+  slug: string;
+  status: string;
+  type: string;
+  link: string;
+  title: {
+    rendered: string;
+  };
+  author: number;
+  comment_status: string;
+  ping_status: string;
+  template: string;
+  meta: Array<any>;
+  description: {
+    rendered: string;
+  };
+  caption: {
+    rendered: string;
+  };
+  alt_text: string;
+  media_type: string;
+  mime_type: string;
+  media_details: {
+    filesize: number;
+    sizes: {};
+  };
+  post: any;
+  source_url: string;
+  _links: {
+    self: Array<{
+      href: string;
+    }>;
+    collection: Array<{
+      href: string;
+    }>;
+    about: Array<{
+      href: string;
+    }>;
+    author: Array<{
+      embeddable: boolean;
+      href: string;
+    }>;
+    replies: Array<{
+      embeddable: boolean;
+      href: string;
+    }>;
+  };
+};
+
+export type ModuleLesson = ModuleResponse[number]["lessons"][number];
+export type ModuleLessonTopic = ModuleLesson["topics"][number];
+export type ModuleLessonTopicResource = ModuleLessonTopic["resources"][number];
+
+export type Status = "idle" | "pending" | "success" | "error";

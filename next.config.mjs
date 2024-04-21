@@ -3,11 +3,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
-        destination: '/modules',
+        source: "/",
+        destination: "/modules",
         permanent: true,
       },
-    ]
+    ];
   },
   webpack: (config) => {
     config.resolve.alias.canvas = false;

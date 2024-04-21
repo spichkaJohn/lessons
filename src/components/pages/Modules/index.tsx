@@ -3,9 +3,9 @@
 import { ModuleResponse } from "@/types";
 import { useState, useEffect, useMemo } from "react";
 import slugify from "slugify";
-import LessonCard from "../LessonCard";
+import Lesson from "../../cards/Lesson";
 
-export default function ModulesPage({
+export default function Page({
   params: { moduleSlug },
 }: {
   params: { moduleSlug: string };
@@ -13,7 +13,7 @@ export default function ModulesPage({
   const [modules, setModules] = useState<ModuleResponse>();
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_HOST}/wp-json/wp/v2/lesson`)
+    fetch(`${process.env.NEXT_PUBLIC_HOST}/wp-json/wp/v2/module`)
       .then((response) => response.json())
       .then((data) => {
         setModules(data);
@@ -33,8 +33,8 @@ export default function ModulesPage({
           <h1 className="mt-4">Занятия</h1>
           {activeModule?.lessons.map((lesson, index) => (
             <div key={index} className="col-md-4">
-              <LessonCard
-                title={lesson.lessons_title}
+              <Lesson
+                title={lesson.title}
                 moduleTitle={activeModule.title.rendered}
               />
             </div>

@@ -34,14 +34,14 @@ export default function LessonsPage({
       (module) => moduleSlug === slugify(module.title.rendered)
     );
   }, [modules, moduleSlug]);
-
+  
   const lesson = useMemo<
     ModuleResponse[number]["lessons"][number] | undefined
   >(() => {
     return activeModule?.lessons.find(
       (lesson) => lessonSlug === slugify(lesson.lessons_title)
     );
-  }, [module, lessonSlug]);
+  }, [activeModule, lessonSlug]);
 
   const [activeTopicIndex, setActiveTopicIndex] = useState<number>(0);
   const [activeTopicBookIndex, setActiveTopicBookIndex] = useState<number>(0);
@@ -85,7 +85,6 @@ export default function LessonsPage({
     },
     [filesMap]
   );
-
   return (
     <main>
       <div className="container mt-4">

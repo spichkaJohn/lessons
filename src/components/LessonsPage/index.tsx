@@ -34,7 +34,7 @@ export default function LessonsPage({
       (module) => moduleSlug === slugify(module.title.rendered)
     );
   }, [modules, moduleSlug]);
-  
+
   const lesson = useMemo<
     ModuleResponse[number]["lessons"][number] | undefined
   >(() => {
@@ -47,12 +47,6 @@ export default function LessonsPage({
   const [activeTopicBookIndex, setActiveTopicBookIndex] = useState<number>(0);
   const [activeTopicQuestionIndex, setActiveTopicQuestionIndex] =
     useState<number>();
-  const [numPages, setNumPages] = useState<number>();
-
-  const onDocumentLoadSuccess = useCallback(
-    (document: any) => setNumPages(document.numPages),
-    [setNumPages]
-  );
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -179,7 +173,6 @@ export default function LessonsPage({
                       {book.lesson_lessons_topic_books_book && (
                         <Document
                           file={fileUrl(book.lesson_lessons_topic_books_book)}
-                          onLoadSuccess={onDocumentLoadSuccess}
                         >
                           {(() => {
                             const elements = [];

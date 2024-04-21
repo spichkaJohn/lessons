@@ -14,7 +14,6 @@ export async function generateStaticParams() {
     moduleSlug: slugify(module.title.rendered),
   }));
 }
-
 export default function Page({ params: { moduleSlug } }: { params: Params }) {
   return <ModulesPage params={{ moduleSlug }} />;
 }

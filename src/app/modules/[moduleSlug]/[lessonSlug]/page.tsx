@@ -1,6 +1,6 @@
 import { ModuleResponse } from "@/types";
 import slugify from "slugify";
-import LessonsPage from "@/components/LessonPage";
+import LessonsPage from "@/components/LessonsPage";
 
 type Params = { moduleSlug: string; lessonSlug: string };
 

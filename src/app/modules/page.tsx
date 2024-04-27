@@ -1,19 +1,10 @@
-"use client";
-
 import Module from "@/components/cards/Module";
-import { ModuleResponse } from "@/types";
-import { useEffect, useState } from "react";
+import { MODULES_URL } from "@/constants";
+import { ModulesResponse } from "@/types";
 
-const Page = () => {
-  const [modules, setModules] = useState<ModuleResponse>();
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_HOST}/wp-json/wp/v2/module`)
-      .then((response) => response.json())
-      .then((data) => {
-        setModules(data);
-      });
-  }, [setModules]);
+const Page = async () => {
+  const modulesResponse = await fetch(MODULES_URL);
+  const modules: ModulesResponse = await modulesResponse.json();
 
   return (
     <main>
@@ -22,7 +13,7 @@ const Page = () => {
           <h1 className="mt-4">Модули</h1>
           {modules?.map((module) => (
             <div key={module.id} className="col-md-4">
-              <Module title={module.title.rendered} />
+              <Module props={{ module }} />
             </div>
           ))}
         </div>

@@ -1,12 +1,12 @@
-import ModulePage from "@/components/pages/ModulePage";
-import { MODULES_URL } from "@/constants";
 import { ModulesResponse } from "@/types";
+import LessonPage from "@/components/pages/LessonPage";
+import { MODULES_URL } from "@/constants";
 import { notFound } from "next/navigation";
 
-type Params = { moduleSlug: string };
+type Params = { moduleSlug: string; lessonIndex: number };
 
 export default async function Page({
-  params: { moduleSlug },
+  params: { moduleSlug, lessonIndex },
 }: {
   params: Params;
 }) {
@@ -15,9 +15,10 @@ export default async function Page({
 
   const module = modules[0];
 
-  if (!module) {
+  const lesson = module?.lessons?.[lessonIndex];
+
+  if (!lesson) {
     notFound();
   }
-
-  return <ModulePage props={{ module }} />;
+  return <LessonPage props={{ lesson }} />;
 }

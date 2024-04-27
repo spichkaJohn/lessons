@@ -1,41 +1,18 @@
 "use client";
 
-import { ModuleResponse } from "@/types";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { useState, useEffect, useMemo, useRef } from "react";
 import slugify from "slugify";
 import TopicResource from "../../topic-resources/TopicResource";
+import { ModuleLesson } from "@/types";
 
 const maxWidth = 600;
 
-export default function Page({
-  params: { moduleSlug, lessonSlug },
-}: {
-  params: Params;
-}) {
-  const [modules, setModules] = useState<ModuleResponse>();
+type Props = {
+  lesson: ModuleLesson;
+};
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_HOST}/wp-json/wp/v2/module`)
-      .then((response) => response.json())
-      .then(setModules);
-  }, []);
-
+export default function Page({ props: { lesson } }: { props: Props }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const activeModule = useMemo<ModuleResponse[number] | undefined>(() => {
-    return modules?.find(
-      (module) => moduleSlug === slugify(module.title.rendered)
-    );
-  }, [modules, moduleSlug]);
-
-  const activeLesson = useMemo<
-    ModuleResponse[number]["lessons"][number] | undefined
-  >(() => {
-    return activeModule?.lessons.find(
-      (lesson) => lessonSlug === slugify(lesson.title)
-    );
-  }, [activeModule, lessonSlug]);
 
   /** + Container width */
   const [containerWidth, setContainerWidth] = useState<number>();
@@ -57,8 +34,8 @@ export default function Page({
     useState<number>(0);
 
   const activeTopicMeta = useMemo(() => {
-    return activeLesson?.topics[activeTopicIdx];
-  }, [activeLesson, activeTopicIdx]);
+    return lesson?.topics[activeTopicIdx];
+  }, [lesson, activeTopicIdx]);
 
   const activeTopicResourceMeta = useMemo(() => {
     return activeTopicMeta?.resources[activeTopicResourceIdx];
@@ -70,7 +47,7 @@ export default function Page({
         <div className="row">
           <div className="col-md-4">
             <div className="accordion sticky-top" id="accordion">
-              {activeLesson?.topics.map((topic, topicIdx) => {
+              {lesson?.topics.map((topic, topicIdx) => {
                 const targetId = `target__${slugify(topic.title)}`;
                 const toggleId = `toggle__${slugify(topic.title)}`;
 

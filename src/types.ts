@@ -1,4 +1,6 @@
-export type ModuleResponse = Array<{
+export type ModulesResponse = Array<Module>;
+
+export type Module = {
   id: number;
   date: string;
   date_gmt: string;
@@ -55,7 +57,7 @@ export type ModuleResponse = Array<{
       templated: boolean;
     }>;
   };
-}>;
+};
 
 export type AttachmentResponse = {
   id: number;
@@ -114,7 +116,7 @@ export type AttachmentResponse = {
   };
 };
 
-export type ModuleLesson = ModuleResponse[number]["lessons"][number];
+export type ModuleLesson = ModulesResponse[number]["lessons"][number];
 export type ModuleLessonTopic = ModuleLesson["topics"][number];
 export type ModuleLessonTopicResource = ModuleLessonTopic["resources"][number];
 

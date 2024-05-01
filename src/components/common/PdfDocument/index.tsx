@@ -17,16 +17,21 @@ type Props = {
   pageStart: number;
   pageEnd: number;
   url: string;
+  onLoadSuccess?: () => void;
 };
 
-export default function Component({ url, pageEnd, pageStart, width }: Props) {
+export default function Component({
+  props: { url, pageEnd, pageStart, width, onLoadSuccess },
+}: {
+  props: Props;
+}) {
   const pages = useMemo(
     () => arrayRange(+pageStart, +pageEnd).map((number) => number), // TODO: Need to adjust type to reality
     [pageEnd, pageStart]
   );
 
   return (
-    <Document file={url}>
+    <Document file={url} onLoadSuccess={onLoadSuccess}>
       {pages.map((number) => {
         return (
           <Page

@@ -31,6 +31,7 @@ export type Module = {
       resources: Array<{
         _type: string;
         title: string;
+        type: "document" | "text";
         document_page_start: number;
         document_page_end: number;
         document: number;

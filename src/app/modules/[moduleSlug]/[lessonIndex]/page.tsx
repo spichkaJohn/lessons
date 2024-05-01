@@ -20,5 +20,5 @@ export default async function Page({
   if (!lesson) {
     notFound();
   }
-  return <LessonPage props={{ lesson }} />;
+  return <LessonPage props={{ module, lesson, lessonIndex }} />;
 }

@@ -7,16 +7,16 @@ type Props = {
   pageStart: number;
   pageEnd: number;
   documentWidth: number;
+  onLoadSuccess(): void;
 };
 
 const cache: Record<number, AttachmentResponse> = {};
 
 export default function Component({
-  fileId,
-  pageStart,
-  pageEnd,
-  documentWidth,
-}: Props) {
+  props: { fileId, pageStart, pageEnd, documentWidth, onLoadSuccess },
+}: {
+  props: Props;
+}) {
   const [status, setStatus] = useState<Status>("idle");
   const [metadata, setMetadata] = useState<AttachmentResponse | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -58,10 +58,13 @@ export default function Component({
       {status === "pending" && "Loading document"}
       {status === "success" && metadata && (
         <PdfDocument
-          width={documentWidth}
-          url={metadata.source_url}
-          pageStart={pageStart}
-          pageEnd={pageEnd}
+          props={{
+            onLoadSuccess,
+            width: documentWidth,
+            url: metadata.source_url,
+            pageStart,
+            pageEnd,
+          }}
         />
       )}
     </>

@@ -1,17 +1,23 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import slugify from "slugify";
 import TopicResource from "../../topic-resources/TopicResource";
-import { ModuleLesson } from "@/types";
+import { Module, ModuleLesson } from "@/types";
 
 const maxWidth = 600;
 
 type Props = {
   lesson: ModuleLesson;
+  module: Module;
+  lessonIndex: number;
 };
 
-export default function Page({ props: { lesson } }: { props: Props }) {
+export default function Page({
+  props: { lesson, module, lessonIndex },
+}: {
+  props: Props;
+}) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   /** + Container width */
@@ -40,6 +46,33 @@ export default function Page({ props: { lesson } }: { props: Props }) {
   const activeTopicResourceMeta = useMemo(() => {
     return activeTopicMeta?.resources[activeTopicResourceIdx];
   }, [activeTopicMeta, activeTopicResourceIdx]);
+
+  const scrollKey = useMemo(() => {
+    return `${module.id}_${lessonIndex}_${activeTopicIdx}_${activeTopicResourceIdx}_scroll`;
+  }, [activeTopicIdx, activeTopicResourceIdx]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const { scrollY } = window;
+
+      localStorage.setItem(scrollKey, String(scrollY));
+    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [scrollKey]);
+
+  const onResourceLoadSuccess = useCallback(() => {
+    const scrollValue = localStorage.getItem(scrollKey);
+
+    if (scrollValue) {
+      setTimeout(() => {
+        window.scrollTo(0, Number(scrollValue));
+      }, 1000);
+    }
+  }, [scrollKey]);
 
   return (
     <main>
@@ -104,6 +137,7 @@ export default function Page({ props: { lesson } }: { props: Props }) {
             <div ref={containerRef}>
               {activeTopicResourceMeta ? (
                 <TopicResource
+                  onLoadSuccess={onResourceLoadSuccess}
                   resource={activeTopicResourceMeta}
                   documentWidth={
                     containerWidth

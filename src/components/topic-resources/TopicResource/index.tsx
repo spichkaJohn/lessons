@@ -4,8 +4,7 @@ import RichText from "../../common/RichText";
 
 type Props = {
   resource: ModuleLessonTopicResource;
-  documentWidth: number;
-  onLoadSuccess(): void;
+  scrollKey?: string;
 };
 
 export default function Component({
@@ -16,16 +15,14 @@ export default function Component({
     text,
     type,
   },
-  documentWidth,
-  onLoadSuccess,
+  scrollKey,
 }: Props) {
   switch (type) {
     case "document":
       return (
         <PdfDocument
           props={{
-            onLoadSuccess,
-            documentWidth,
+            scrollKey,
             fileId: document,
             pageStart,
             pageEnd,
@@ -34,8 +31,8 @@ export default function Component({
       );
 
     case "text":
-      return <RichText props={{ onLoadSuccess, data: text }} />;
+      return <RichText props={{ data: text }} />;
     default:
-      return;
+      return "Topic resource is not supported";
   }
 }

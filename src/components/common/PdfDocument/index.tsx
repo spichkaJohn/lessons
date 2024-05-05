@@ -1,10 +1,13 @@
-import { useMemo } from "react";
-import { pdfjs, Page, Document } from "react-pdf";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.js",
-  import.meta.url
-).toString();
+import { useCallback, useEffect, useRef } from "react";
+import {
+  PdfViewerComponent,
+  Toolbar,
+  Magnification,
+  Navigation,
+  TextSearch,
+  Inject,
+  PageChangeEventArgs,
+} from "@syncfusion/ej2-react-pdfviewer";
 
 const arrayRange = (start: number, stop: number, step: number = 1): number[] =>
   Array.from(
@@ -13,36 +16,49 @@ const arrayRange = (start: number, stop: number, step: number = 1): number[] =>
   );
 
 type Props = {
-  width: number;
   pageStart: number;
   pageEnd: number;
   url: string;
-  onLoadSuccess?: () => void;
+  onPageChange?: (e: PageChangeEventArgs) => void;
 };
 
 export default function Component({
-  props: { url, pageEnd, pageStart, width, onLoadSuccess },
+  props: { url, pageEnd, pageStart, onPageChange },
 }: {
   props: Props;
 }) {
-  const pages = useMemo(
-    () => arrayRange(+pageStart, +pageEnd).map((number) => number), // TODO: Need to adjust type to reality
-    [pageEnd, pageStart]
-  );
+  const pdfViewerRef = useRef<PdfViewerComponent>(null);
+
+  const goToPage = useCallback((pageStart: number) => {
+    pdfViewerRef.current?.navigationModule.goToPage(pageStart);
+  }, []);
+
+  useEffect(() => {
+    goToPage(pageStart);
+  }, [pageStart]);
 
   return (
-    <Document file={url} onLoadSuccess={onLoadSuccess}>
-      {pages.map((number) => {
-        return (
-          <Page
-            key={number}
-            pageNumber={number}
-            width={width}
-            renderTextLayer={false}
-            renderAnnotationLayer={false}
-          />
-        );
-      })}
-    </Document>
+    <PdfViewerComponent
+      ref={pdfViewerRef}
+      documentPath={url}
+      resourceUrl="https://cdn.syncfusion.com/ej2/24.1.41/dist/ej2-pdfviewer-lib"
+      documentLoad={() => goToPage(pageStart)}
+      pageChange={onPageChange}
+      toolbarSettings={{
+        showTooltip: false,
+        toolbarItems: [
+          "UndoRedoTool",
+          "PageNavigationTool",
+          "MagnificationTool",
+          "SelectionTool",
+          "SearchOption",
+        ],
+      }}
+      enableNavigation={true}
+      style={{ height: "100vh" }}
+      enableThumbnail={false}
+    >
+      <Inject services={[Toolbar, Navigation, Magnification, TextSearch]} />
+    </PdfViewerComponent>
   );
 }

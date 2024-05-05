@@ -1,25 +1,48 @@
 import { AttachmentResponse, Status } from "@/types";
 import PdfDocument from "../../common/PdfDocument";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+import { PageChangeEventArgs } from "@syncfusion/ej2-react-pdfviewer";
 
 type Props = {
   fileId: number;
   pageStart: number;
   pageEnd: number;
-  documentWidth: number;
-  onLoadSuccess(): void;
+  scrollKey?: string;
 };
 
 const cache: Record<number, AttachmentResponse> = {};
 
 export default function Component({
-  props: { fileId, pageStart, pageEnd, documentWidth, onLoadSuccess },
+  props: { fileId, pageStart, pageEnd, scrollKey },
 }: {
   props: Props;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [metadata, setMetadata] = useState<AttachmentResponse | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [initialPage, setInitialPage] = useState<number | undefined>();
+
+  useEffect(() => {
+    if (status !== "success" || !scrollKey) {
+      return;
+    }
+
+    const savedInitialPage = localStorage.getItem(scrollKey);
+
+    if (!savedInitialPage) {
+      return;
+    }
+
+    setInitialPage(Number(savedInitialPage));
+  }, [status, scrollKey]);
+
+  const onPageChange = useCallback(
+    (e: PageChangeEventArgs) => {
+      scrollKey && localStorage.setItem(scrollKey, String(e.currentPageNumber));
+    },
+    [scrollKey]
+  );
 
   useEffect(() => {
     const cachedMetadata = cache[fileId];
@@ -59,10 +82,9 @@ export default function Component({
       {status === "success" && metadata && (
         <PdfDocument
           props={{
-            onLoadSuccess,
-            width: documentWidth,
+            onPageChange,
             url: metadata.source_url,
-            pageStart,
+            pageStart: initialPage ?? pageStart,
             pageEnd,
           }}
         />

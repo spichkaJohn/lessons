@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@syncfusion/ej2-react-pdfviewer": "^25.1.42",
     "next": "14.2.2",
     "react": "^18",
     "react-dom": "^18",

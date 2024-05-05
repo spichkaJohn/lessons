@@ -3,7 +3,7 @@ import { MODULES_URL } from "@/constants";
 import { ModulesResponse } from "@/types";
 
 const Page = async () => {
-  const modulesResponse = await fetch(MODULES_URL);
+  const modulesResponse = await fetch(MODULES_URL, { cache: "no-store" });
   const modules: ModulesResponse = await modulesResponse.json();
 
   return (

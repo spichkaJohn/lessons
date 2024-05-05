@@ -10,7 +10,9 @@ export default async function Page({
 }: {
   params: Params;
 }) {
-  const modulesResponse = await fetch(`${MODULES_URL}?slug=${moduleSlug}`);
+  const modulesResponse = await fetch(`${MODULES_URL}?slug=${moduleSlug}`, {
+    cache: "no-store",
+  });
   const modules: ModulesResponse = await modulesResponse.json();
 
   const module = modules[0];

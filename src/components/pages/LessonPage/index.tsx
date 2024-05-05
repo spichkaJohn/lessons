@@ -18,23 +18,6 @@ export default function Page({
 }: {
   props: Props;
 }) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  /** + Container width */
-  const [containerWidth, setContainerWidth] = useState<number>();
-  useEffect(() => {
-    const fn = () => {
-      setContainerWidth(window.innerWidth);
-    };
-
-    fn();
-    window.addEventListener("resize", fn);
-    return () => {
-      window.removeEventListener("resize", fn);
-    };
-  }, []);
-  /** - Container width */
-
   const [activeTopicIdx, setActiveTopicIdx] = useState<number>(0);
   const [activeTopicResourceIdx, setActiveTopicResourceIdx] =
     useState<number>(0);
@@ -50,29 +33,6 @@ export default function Page({
   const scrollKey = useMemo(() => {
     return `${module.id}_${lessonIndex}_${activeTopicIdx}_${activeTopicResourceIdx}_scroll`;
   }, [activeTopicIdx, activeTopicResourceIdx]);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const { scrollY } = window;
-
-      localStorage.setItem(scrollKey, String(scrollY));
-    };
-
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [scrollKey]);
-
-  const onResourceLoadSuccess = useCallback(() => {
-    const scrollValue = localStorage.getItem(scrollKey);
-
-    if (scrollValue) {
-      setTimeout(() => {
-        window.scrollTo(0, Number(scrollValue));
-      }, 1000);
-    }
-  }, [scrollKey]);
 
   return (
     <main>
@@ -134,21 +94,14 @@ export default function Page({
             </div>
           </div>
           <div className="col-md-8">
-            <div ref={containerRef}>
-              {activeTopicResourceMeta ? (
-                <TopicResource
-                  onLoadSuccess={onResourceLoadSuccess}
-                  resource={activeTopicResourceMeta}
-                  documentWidth={
-                    containerWidth
-                      ? Math.min(containerWidth, maxWidth)
-                      : maxWidth
-                  }
-                />
-              ) : (
-                "Loading metadata"
-              )}
-            </div>
+            {activeTopicResourceMeta ? (
+              <TopicResource
+                scrollKey={scrollKey}
+                resource={activeTopicResourceMeta}
+              />
+            ) : (
+              "Loading metadata"
+            )}
           </div>
         </div>
       </div>
